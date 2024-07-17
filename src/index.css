@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    width: 1000px;
+    margin: 0px auto ;
+}
+.img-container{
+    display: flex;
+    margin-top:100px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.image-container {
+    
+    max-width: 80%;
+    cursor: pointer;
+   
+}
+.image-container img ,.img-container img{
+    width: 180px; /* Set the desired width */
+    height: 180px; /* Set the desired height */
+    object-fit: cover; /* Ensures the image covers the box without stretching */
+    border-radius: 10px; /* Optional: For rounded corners */
+   
+}
+.participant-container{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 200px;
+}
