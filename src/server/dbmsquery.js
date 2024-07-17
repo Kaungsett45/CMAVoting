@@ -8,14 +8,19 @@ const app = new express();
 app.use(express.json());
 app.use(cors());
 
-app.get("/king", async (req, res) => {
+app.get("/api", async (req, res) => {
+  return res.send({ msg: "Server Is Working" })
+})
+
+
+app.get("/api/king", async (req, res) => {
   const result = await connection.query(
     'select * from participant where category="King"'
   );
   return res.send(result[0]);
 });
 
-app.get("/queen", async (req, res) => {
+app.get("/api/queen", async (req, res) => {
   const result = await connection.query(
     'select * from participant where category="Queen"'
   );
@@ -23,7 +28,7 @@ app.get("/queen", async (req, res) => {
 });
 
 
-app.get('/top', async (req, res) => {
+app.get('/api/top', async (req, res) => {
   try {
     const [resultKing] = await connection.query(
       'SELECT * FROM participant WHERE category="King" ORDER BY vote DESC LIMIT 1'
@@ -84,34 +89,31 @@ app.put("/voting/:id", async (req, res) => {
       "SELECT * FROM Votetoken WHERE votetoken = ?",
       [votetoken]
     );
-      console.log(tokenResults + 'dbms token ')
-      console.log(votetoken + ' user token')
+    console.log(tokenResults + 'dbms token ')
+    console.log(votetoken + ' user token')
     if (tokenResults.length === 0) {
       return res.status(404).send({ msg: "Invalid token" });
     }
 
-   
-     await connection.query("DELETE FROM Votetoken WHERE votetoken = ?", [votetoken]);
 
-     const [results] = await connection.query("SELECT vote FROM participant WHERE id = ?", [id]);
-     if (results.length === 0) {
-       return res.status(404).send({ msg: "Participant not found" });
-     }
-     const currentVote = results[0].vote;
- 
-     await connection.query("UPDATE participant SET vote = ? WHERE id = ?", [currentVote + 1, id]);
- 
-     console.log("DB update successful");
-     return res.status(200).send({ msg: "Update complete!!!" });
-   
+    await connection.query("DELETE FROM Votetoken WHERE votetoken = ?", [votetoken]);
+
+    const [results] = await connection.query("SELECT vote FROM participant WHERE id = ?", [id]);
+    if (results.length === 0) {
+      return res.status(404).send({ msg: "Participant not found" });
+    }
+    const currentVote = results[0].vote;
+
+    await connection.query("UPDATE participant SET vote = ? WHERE id = ?", [currentVote + 1, id]);
+
+    console.log("DB update successful");
+    return res.status(200).send({ msg: "Update complete!!!" });
+
   } catch (err) {
     console.error("Database error:", err);
     return res.status(500).send({ msg: "Internal server error" });
   }
 });
 
+export default app
 
-
-app.listen(8080, () => {
-  console.log("Server Is Running");
-});
